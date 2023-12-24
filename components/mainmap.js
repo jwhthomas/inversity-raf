@@ -21,7 +21,7 @@ export default function MainMap({ location, airportLocations }){
     });
     
     const mapOptions = {
-        disableDefaultUI: true,
+        disableDefaultUI: false,
         clickableIcons: true,
         scrollwheel: true,
     }

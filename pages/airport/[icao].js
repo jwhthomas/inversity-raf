@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 
 export default function Airport(){
     const router = useRouter()
+    const icao = router.query.icao;
     const [airportData, setAirportData] = useState(null);
     const [location, setLocation] = useState(null);
 
@@ -14,11 +15,12 @@ export default function Airport(){
         });
 
         async function fetchData(){
-            const airportData = await (await fetch("/api/getAirportData?icao_code="+router.query.icao)).json()
+            if(!icao) return;
+            const airportData = await (await fetch("/api/getAirportData?icao_code="+icao)).json()
             setAirportData(airportData)
         }
         fetchData()
-    }, [router]);
+    }, [router, icao]);
 
     if(!airportData || !location) return;
 
@@ -28,7 +30,7 @@ export default function Airport(){
     const airportLocation = {lat: airportData.latitude_deg, lng: airportData.longitude_deg}
 
     return (
-        <div className="w-screen min-h-screen">
+        <div className="w-screen min-h-screen overflow-auto">
         <Head>
             <title>{airportData.name}</title>
         </Head>
@@ -57,45 +59,54 @@ export default function Airport(){
                 </div>
 
                 <div className="flex flex-wrap w-[80vw]">
-                <table className="mt-6 mr-8 text-xl">
-                    <tbody>
-                        <h1 className="text-2xl font-bold">Frequencies</h1>
-                        {airportData['freqs'].map((freq, i) => (
-                        <tr key={i}>
-                            <td>{freq.description}</td>
-                            <td className="pl-4">{freq.frequency_mhz} MHz</td>
-                        </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {airportData['runways'].map((runway, i) => (
-                    <table key={i} className="mt-6 mr-8 text-xl">
-                        <tbody>
-                            <h1 className="text-2xl font-bold">{"Runway "+(i+1)}</h1>
-                            <tr>
-                                <td>Surface</td>
-                                <td>{runway.surface}</td>
-                            </tr>
-                            <tr>
-                                <td>Length</td>
-                                <td>{runway.length_ft} ft</td>
-                            </tr>
-                            {runway.width_ft ?
-                                <tr>
-                                    <td>Width</td>
-                                    <td>{runway.width_ft} ft</td>
+                    {airportData['freqs'] ?
+                        <table className="mt-6 mr-8 text-xl">
+                            <tbody>
+                                <h1 className="text-2xl font-bold">Frequencies</h1>
+                                {airportData['freqs'].map((freq, i) => (
+                                <tr key={i}>
+                                    <td>{freq.description}</td>
+                                    <td className="pl-4">{freq.frequency_mhz} MHz</td>
                                 </tr>
-                            :
-                                null
-                            }
-                            <tr>
-                                <td>Lighted</td>
-                                <td>{runway.lighted ? "true" : "false"}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                ))}
+                                ))}
+                            </tbody>
+                        </table>
+                    :
+                        <h1 className="p-5 text-lg">No Frequency Data Available</h1>
+                    }
+
+                    { airportData['runways'] ?
+                    
+                        airportData['runways'].map((runway, i) => (
+                            <table key={i} className="mt-6 mr-8 text-xl">
+                                <tbody>
+                                    <h1 className="text-2xl font-bold">{"Runway "+(i+1)}</h1>
+                                    <tr>
+                                        <td>Surface</td>
+                                        <td>{runway.surface}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Length</td>
+                                        <td>{runway.length_ft} ft</td>
+                                    </tr>
+                                    {runway.width_ft ?
+                                        <tr>
+                                            <td>Width</td>
+                                            <td>{runway.width_ft} ft</td>
+                                        </tr>
+                                    :
+                                        null
+                                    }
+                                    <tr>
+                                        <td>Lighted</td>
+                                        <td>{runway.lighted ? "true" : "false"}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        ))
+                    :
+                    <h1 className="p-5 text-lg">No Runway Data Available</h1>
+                }
                 </div>
             </div>
         </div>
