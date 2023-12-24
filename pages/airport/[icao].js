@@ -32,7 +32,7 @@ export default function Airport(){
         <Head>
             <title>{airportData.name}</title>
         </Head>
-            <div className="mt-10 ml-10">
+            <div className="my-10 ml-10">
                 <h1 className="text-4xl font-bold">{airportData.name}</h1>
                 <h2 className="text-2xl">ICAO: {airportData.ident}{airportData.iata_code ? <span className="text-slate-400"> / IATA: {airportData.iata_code}</span> : null}</h2>
                 <table className="my-4 text-xl">
