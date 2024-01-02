@@ -47,10 +47,18 @@ export default function Airport(){
                             <td>Longitude:</td>
                             <td className="pl-4">{airportLocation.lng}</td>
                         </tr>
-                        <tr>
-                            <td>Elevation:</td>
-                            <td className="pl-4">{airportData.elevation_ft} ft</td>
-                        </tr>
+                        {airportData.elevation_ft ?
+                            <tr>
+                                <td>Elevation:</td>
+                                <td className="pl-4">{airportData.elevation_ft} ft</td>
+                            </tr>
+                        :
+                            <tr className="text-slate-400">
+                                <td>Elevation:</td>
+                                <td className="pl-4">unavailable</td>
+                            </tr>
+                        }
+
                     </tbody>
                 </table>
 
